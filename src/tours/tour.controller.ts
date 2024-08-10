@@ -9,7 +9,7 @@ export class TourController {
 
     @Post('activity')
     public async tourAcitivity(@Req() req : Request , @Res() res : Response){
-        try{
+        try{            
             await activityFormat.validateAsync(req.body);
             return this.tourService.tourAcitivity(req ,res);
         } catch(e){
