@@ -1,5 +1,44 @@
 import mongoose from "mongoose";
 
+const Schema = mongoose.Schema;
+
+// Define the nested schema for pricing
+const pricingSchema = new Schema({
+  adult: {
+    type: Number,
+    required: true
+  },
+  child: {
+    type: Number,
+    required: true
+  },
+  infant: {
+    type: Number,
+    required: true
+  }
+});
+
+// Define the schema for the Tour
+const tourSchema = new Schema({
+  tourName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  withoutTransfer: {
+    type: pricingSchema,
+    required: true
+  },
+  sharedTransfer: {
+    type: pricingSchema,
+    required: true
+  },
+  privateTransfer: {
+    type: pricingSchema,
+    required: true
+  }
+})
+
 export const ActivitySchema = new mongoose.Schema({
     activityId : {
         type : String,
@@ -33,12 +72,10 @@ export const ActivitySchema = new mongoose.Schema({
         type :  Number,
         default : 0
     },
-    price : {
-        type : Number,
-        required : true
-    },
+    price : [tourSchema],
     delayAnimation : {
         type : Number ,
         default : 0
     }
 })
+

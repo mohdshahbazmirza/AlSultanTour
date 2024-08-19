@@ -10,6 +10,10 @@ export const ReviewSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
+    name : {
+        type : String,
+        required : true
+    },
     rating: {
         type: Number,
         required: true,
@@ -18,9 +22,6 @@ export const ReviewSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    reviewImage : [{
-        type :  Buffer
-    }], 
     createdAt: {
         type: Date,
         default: Date.now,
