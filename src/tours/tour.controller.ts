@@ -1,19 +1,41 @@
-import { Controller, Get, Post, Req, Res } from "@nestjs/common";
+import { Controller, Get, Post, Req, Res, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { Request, Response } from 'express';
 import { TourService } from "./tour.service";
 import { activityFormat } from "src/request/activity.schema";
+import { FilesInterceptor } from "@nestjs/platform-express";
+import * as multer from 'multer';
+
 
 @Controller('tours')
 export class TourController {
     constructor(private readonly tourService : TourService){}
 
+    // @Post('activity')
+    // public async tourAcitivity(@Req() req : Request , @Res() res : Response){
+    //     try{            
+    //         await activityFormat.validateAsync(req.body);
+    //         return this.tourService.tourAcitivity(req ,res);
+    //     } catch(e){
+    //         return res.status(400).send({error: e.message});
+    //     }
+    // }
+
     @Post('activity')
-    public async tourAcitivity(@Req() req : Request , @Res() res : Response){
-        try{            
-            await activityFormat.validateAsync(req.body);
-            return this.tourService.tourAcitivity(req ,res);
-        } catch(e){
-            return res.status(400).send({error: e.message});
+    @UseInterceptors(FilesInterceptor('images', 10, multer().any() as any)) // Handle multiple files
+    public async tourAcitivity(
+        @UploadedFiles() files: Express.Multer.File[], // Extract files
+        @Req() req: Request,
+        @Res() res: Response
+    ) {
+        try {
+        req.files = files; // Attach files to the request object
+        console.log(files,"files");
+        
+        return await this.tourService.tourAcitivity(req, res);
+        } catch (e) {
+            console.log(e,"eeeeeeeeeeeeeeeeeeeeeeeee");
+            
+        return res.status(400).send({ error: e.message });
         }
     }
     

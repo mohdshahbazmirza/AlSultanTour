@@ -8,6 +8,7 @@ import { TourService } from "./tour.service";
 import { TourController } from "./tour.controller";
 import { ActivityInfo } from "src/schema/activityInfo.schema";
 import { ReviewSchema } from "src/schema/review.schema";
+import { S3Module } from "src/service modules/s3/s3.module";
 @Module({
     imports : [
         HttpModule.register({
@@ -29,6 +30,7 @@ import { ReviewSchema } from "src/schema/review.schema";
               }),
             inject : [MongoDBConfigService],
         }),
+        S3Module
     ],
     controllers : [TourController],
     providers : [TourService],

@@ -6,6 +6,7 @@ import { activity } from "src/interface/activity.model";
 import { activityInfo } from "src/interface";
 import { uuid } from "uuidv4";
 import { review } from "src/interface/review.model";
+import { S3Service } from "src/service modules/s3/s3.service";
 
 
 @Injectable()
@@ -13,7 +14,9 @@ export class TourService {
     constructor(
         @InjectModel('activity') private readonly tourService: Model<activity>,
         @InjectModel('activity-info') private readonly activityInfoService: Model<activityInfo>,
-        @InjectModel('review') private readonly reviewService: Model<review>
+        @InjectModel('review') private readonly reviewService: Model<review>,
+        private readonly s3Service: S3Service // Inject S3 Service
+
     ){}
     
     public async tourAcitivity(req : Request , res : Response) {
@@ -22,12 +25,18 @@ export class TourService {
         const activity = await this.tourService.findOne({activityId})
         if(activity){
             throw new Error("Activity already exists");
+        } 
+        if (req.files && Array.isArray(req.files)) {
+            const images = await this.s3Service.uploadFiles(req.files as Express.Multer.File[]);
+            givenAcitivityDetails.images = images; // Save image URLs to activity details
         }
+        givenAcitivityDetails.basePrice=JSON.parse(givenAcitivityDetails.basePrice); 
+        givenAcitivityDetails.packagetype=JSON.parse(givenAcitivityDetails.packagetype); 
         givenAcitivityDetails.activityId = activityId;
         await new this.tourService(givenAcitivityDetails).save();
         return res.status(200).send({"ok":true})
     }
-
+ 
     public async getAllTourAcitivity(req: Request , res : Response){
         const allActivity = await this.tourService.find({});
         // console.log(allActivity,'bbb');
@@ -71,3 +80,5 @@ export class TourService {
         return res.status(200).send({"ok":true})
   }
 }
+
+// 2.50.32.237

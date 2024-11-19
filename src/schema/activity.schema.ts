@@ -1,81 +1,35 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const Schema = mongoose.Schema;
-
-// Define the nested schema for pricing
-const pricingSchema = new Schema({
-  adult: {
-    type: Number,
-    required: true
-  },
-  child: {
-    type: Number,
-    required: true
-  },
-  infant: {
-    type: Number,
-    required: true
-  }
+// Schema for transfer options
+const TransferOptionSchema = new Schema({
+  option: { type: String, required: true }, // e.g., "option1"
+  charge: { type: Number, required: true }, // Cost for the transfer option
 });
 
-// Define the schema for the Tour
-const tourSchema = new Schema({
-  tourName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  withoutTransfer: {
-    type: pricingSchema,
-    required: true
-  },
-  sharedTransfer: {
-    type: pricingSchema,
-    required: true
-  },
-  privateTransfer: {
-    type: pricingSchema,
-    required: true
-  }
-})
+// Schema for package types
+const PackageTypeSchema = new Schema({
+  id: { type: Number, required: true }, // Unique identifier for the package
+  name: { type: String, required: true }, // Package name (e.g., "Half Day")
+  charges: { type: Number, required: true }, // Base charges for the package
+  transferOptions: [TransferOptionSchema], // Available transfer options for the package
+});
 
-export const ActivitySchema = new mongoose.Schema({
-    activityId : {
-        type : String,
-        unique : true,
-        required : true
-    },
-    tag : {
-        type : String
-    },
-    slideImg : [{
-        type : String,
-        required : true
-    }],
-    title : {
-        type : String,
-        required : true
-    },
-    location : {
-        type : String,
-        required : true 
-
-    },
-    duration : {
-        type : Number
-    },
-    numberOfReviews : {
-        default : 0 ,
-        type : Number
-    },
-    rating : {
-        type :  Number,
-        default : 0
-    },
-    price : [tourSchema],
-    delayAnimation : {
-        type : Number ,
-        default : 0
-    }
-})
+// Main schema for activities
+export const ActivitySchema = new Schema({
+  activityId: { type: String, required: true, unique: true }, // Unique identifier for the activity
+  name: { type: String, required: true }, // Activity name (e.g., "Atlantis Water Park")
+  location: { type: String, required: true }, // Location of the activity
+  tag: { type: String, required: true }, // Tag for categorization (e.g., "Adventure")
+  noOfReviews: { type: Number, default: 0 }, // Number of reviews
+  noOfHours: { type: Number, required: true }, // Duration in hours
+  basePrice: {
+    adult: { type: Number, required: true }, // Base price for adults
+    child: { type: Number, required: true }, // Base price for children
+    infant: { type: Number, required: true }, // Base price for infants
+  },
+  images: [{ type: String, required: true }], // Array of image URLs
+  packagetype: [PackageTypeSchema], // Array of package types
+  rating: { type: Number, default: 0 }, // Overall rating
+});
 

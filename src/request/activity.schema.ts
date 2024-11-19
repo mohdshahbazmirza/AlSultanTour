@@ -9,6 +9,7 @@ const pricingSchema = joi.object({
 
 // Define the schema for the Tour
 const tourSchema = joi.object({
+  tourId : joi.string().required(),
   tourName: joi.string().required(),
   withoutTransfer: pricingSchema.required(),
   sharedTransfer: pricingSchema.required(),
