@@ -60,7 +60,6 @@ export class TourController {
     @Post('activity-info')
     public async tourAcitivityInfo(@Req() req : Request , @Res() res : Response){
         try{
-            // await activityFormat.validateAsync(req.body);
             return this.tourService.tourAcitivityInfo(req ,res);
         } catch(e){
             return res.status(400).send({error: e.message});

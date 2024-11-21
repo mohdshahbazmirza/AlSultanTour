@@ -51,6 +51,8 @@ export class TourService {
 
     public async tourAcitivityInfo(req : Request , res : Response){
         const givenAcitivityInfo: any = req.body;
+        console.log(req.body,"oooooooooooooooooo");
+        
         const activity = await this.activityInfoService.findOne({ activityId : givenAcitivityInfo.activityId})
         if(activity){
             throw new Error("Activity Info already exists");
